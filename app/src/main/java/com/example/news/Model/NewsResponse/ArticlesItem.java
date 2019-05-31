@@ -55,6 +55,7 @@ public class ArticlesItem{
 	@SerializedName("content")
 	private String content;
 
+
 	public void setPublishedAt(String publishedAt){
 		this.publishedAt = publishedAt;
 	}

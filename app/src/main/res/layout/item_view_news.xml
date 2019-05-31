@@ -17,8 +17,6 @@
             android:id="@+id/sourceName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:textColor="#000"
             android:textSize="15sp"
@@ -30,15 +28,15 @@
             android:id="@+id/sourceTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:textColor="#000"
             android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
+
             app:layout_constraintTop_toBottomOf="@id/sourceName"
-            tools:text="CNN" />
+            tools:text="CNN"
+            android:layout_marginLeft="1dp" />
 
         <TextView
             android:id="@+id/newsTime"
@@ -47,6 +45,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
             android:gravity="right"
             android:textColor="#000"
             android:textDirection="anyRtl"

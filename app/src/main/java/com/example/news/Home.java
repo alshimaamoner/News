@@ -3,12 +3,20 @@ package com.example.news;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextThemeWrapper;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.news.Adapter.NewsAdapter;
 import com.example.news.Base.BaseActivity;
@@ -28,6 +36,7 @@ public class Home extends BaseActivity {
     private TabLayout mChannelLayout;
     private RecyclerView mNewsRecyler;
     NewsRepository newsRepositry;
+    SearchView searchView;
     List<ArticlesItem> news;
    // List<LikesResponse> like;
     NewsAdapter newsAdapter;
@@ -56,9 +65,7 @@ public class Home extends BaseActivity {
                 newsRepositry.setLikes(likesResponse);
                 likeButton.setTag(R.drawable.thumb_on);
                 likeButton.setLikeDrawableRes(R.drawable.thumb_on);
-               /* SharedPreferences preferences=activity.getSharedPreferences("likes",Context.MODE_PRIVATE);
-                preferences.edit().putBoolean("like",true).commit();
-                */
+
 
             }
         });
@@ -101,7 +108,7 @@ public class Home extends BaseActivity {
             startActivityForResult(intent,0);
         }
     };
-
+static String id;
     public void showSourceInTabLayout(List<SourcesItem> sourcesItems) {
         if (sourcesItems == null || sourcesItems.size()==0) return;
         for (SourcesItem sourcesItem : sourcesItems) {
@@ -114,8 +121,10 @@ public class Home extends BaseActivity {
         mChannelLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                SourcesItem source = ((SourcesItem) tab.getTag());
+             SourcesItem source = ((SourcesItem) tab.getTag());
+             id=source.getId();
                 newsRepositry.getNewsBySourceId(source.getId(), onNewsPreparedListener);
+
 
 
             }
@@ -138,7 +147,7 @@ public class Home extends BaseActivity {
        mChannelLayout.getTabAt(0).select();
     }
 
-
+static List<ArticlesItem> article=null;
 
     NewsRepository.OnNewsPreparedListener onNewsPreparedListener=new NewsRepository.OnNewsPreparedListener()
 
@@ -150,6 +159,7 @@ public class Home extends BaseActivity {
 
                 @Override
                 public void run() {
+                    article=new ArrayList<>(newsList);
                     newsAdapter.changeData(newsList);
 
                 }
@@ -157,7 +167,62 @@ public class Home extends BaseActivity {
 
     }
     };
-  /*
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search, menu);
+        final MenuItem myActionMenuItem = menu.findItem(R.id.search);
+        searchView = (SearchView) myActionMenuItem.getActionView();
+        changeSearchViewTextColor(searchView);
+        ((EditText) searchView.findViewById(
+                android.support.v7.appcompat.R.id.search_src_text)).
+                setHintTextColor(getResources().getColor(R.color.colorPrimary));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override            public boolean onQueryTextSubmit(String query) {
+                if (!searchView.isIconified()) {
+                    searchView.setIconified(true);
+                }
+                myActionMenuItem.collapseActionView();
+                return false;
+    }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                final  List<ArticlesItem> filtermodelist=filter(article,newText);
+                newsAdapter.setfilter(filtermodelist);
+                return true;
+            }
+        });
+        return true;
+    }
+    private List<ArticlesItem> filter(List<ArticlesItem> pl,String query)
+    {
+        query=query.toLowerCase();
+        final List<ArticlesItem> filteredModeList=new ArrayList<>();
+        for (ArticlesItem model:pl)
+        {
+            final String text=model.getTitle().toLowerCase();
+            if (text.contains(query))
+            {
+                filteredModeList.add(model);
+            }
+        }
+        return filteredModeList;
+    }
+    private void changeSearchViewTextColor(View view) {
+        if (view != null) {
+            if (view instanceof TextView) {
+                ((TextView) view).setTextColor(Color.WHITE);
+                return;
+            } else if (view instanceof ViewGroup) {
+                ViewGroup viewGroup = (ViewGroup) view;
+                for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                    changeSearchViewTextColor(viewGroup.getChildAt(i));
+                }
+            }
+        }
+    }
+    /*
 NewsRepository.OnLikesPreparedListener onLikesPreparedListener=new NewsRepository.OnLikesPreparedListener() {
     @Override
     public void OnLikesPrepared(String url, LikesResponse likes) {

@@ -19,8 +19,8 @@ public interface NewsDao {
 
     @Query("select * from ArticlesItem where sourceId=:sourceId")
     List<ArticlesItem>getNewsBySourceId(String sourceId);
-
-
+    @Query("SELECT * FROM ArticlesItem WHERE title LIKE :search")
+    public List<ArticlesItem> findUserWithName(String search);
 
 
 

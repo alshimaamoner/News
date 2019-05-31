@@ -111,7 +111,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         this.newsList=newsList;
         notifyDataSetChanged();
     }
-
+    public void setfilter(List<ArticlesItem> newList)
+    {
+        newsList=new ArrayList<>();
+        newsList.addAll(newList);
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() {
         if(newsList==null) return 0;
